@@ -3,67 +3,40 @@
 #include <array>
 #include <vector>
 #include <algorithm>
-#include <cmath>
-#include <stdlib.h> 
+#include <cmath> 
 #include <string>
-#include <ctime>
+#include <random>
+
 
 typedef unsigned long long int ullong; 
 using std::vector;
 
 
-const vector<double> pr = {90, 30, 30, 6, 6};
+const vector<double> pr = {90, 30, 30, 14, 6};
 double alpha = 0.05;
 unsigned long long int max_iter = 1e+8;
 int nResults = pr.size();
 int s = nResults; // ????????????
 
 
-void report(vector<double> &f_sol, vector<ullong> &counter, double total, ullong nIter);
+void report(vector<double> &f_sol, vector<ullong> &counter, ullong nIter);
 
-double rand0to1()
-{
-	return rand() / (RAND_MAX + 1.);
-}
-
-class WeightedRandomGenerator
-{
-	vector<double> totals = vector<double>();
-	double total = 0;
-	
-    public:  
-	WeightedRandomGenerator(const vector<double> &pr){
-		this->totals = vector<double>(pr.size());
-		double running_total = 0;
-
-		for (int i = 0; i < pr.size(); ++i){
-           running_total += pr[i];
-		   this->totals[i] = running_total;          
-		}
-		this->total = running_total;
-	}
-	double get_total() {return this->total;}
-	
-	int get_next(){		
-		double rnd = rand0to1() * this->total; 
-		return lower_bound(this->totals.begin(), this->totals.end(), rnd) - this->totals.begin();
-	}
-}; 
 
 double delta(ullong n, int s){
     return std::sqrt((2. / static_cast<double>(n)) * std::log(s / alpha));
 }
 
 int main(){
-	WeightedRandomGenerator gen(pr);
+	std::random_device rd;
+    std::mt19937 g(rd());
+	std::discrete_distribution<> gen(pr.begin(), pr.end());
 	ullong n = 0;
 	vector<double> f_sol(s);
 	vector<ullong> counter(nResults);
 	bool cont = true;
-	srand(time(NULL));
 	while (cont){
 		++n;
-		int exp_result = gen.get_next();
+		int exp_result = gen(g);
 		++counter[exp_result];
 		double sum = 0.;
 		double freq_curr = counter[0] / n;
@@ -83,7 +56,7 @@ int main(){
 		}
 	}
 	
-	report(f_sol, counter, gen.get_total(), n);
+	report(f_sol, counter, n);
 	
 
  	//std::cin.get();
@@ -91,13 +64,14 @@ int main(){
 }
 
 
-void report(vector<double> &f_sol, vector<ullong> &counter, double total, ullong nIter)
+void report(vector<double> &f_sol, vector<ullong> &counter, ullong nIter)
 {
 	std::cout.precision(3);
 	std::cout.setf( std::ios::fixed, std:: ios::floatfield );
 	
 	std::cout << "probabilities :" << std::endl; 
 	std::cout << "pr1\t"; 
+	double total = std::accumulate(pr.begin(), pr.end(), 0);
 	for (int i = 1; i < pr.size(); ++i){
 		std::string symbol = (pr[i - 1] > pr[i]) ? ">" : "=";
 		std::cout << symbol << "\t" << "pr" << std::to_string(i + 1) << "\t";
