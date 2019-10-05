@@ -12,8 +12,8 @@ typedef unsigned long long int ullong;
 using std::vector;
 
 
-const vector<double> pr = {90, 30, 30, 14, 6};
-double alpha = 0.05;
+const vector<double> pr = {0.497512, 0.247519, 0.123144, 0.0705599, 0.0612655};
+double alpha = 0.20;
 unsigned long long int max_iter = 1e+8;
 int nResults = pr.size();
 int s = nResults; // ????????????
@@ -71,7 +71,7 @@ void report(vector<double> &f_sol, vector<ullong> &counter, ullong nIter)
 	
 	std::cout << "probabilities :" << std::endl; 
 	std::cout << "pr1\t"; 
-	double total = std::accumulate(pr.begin(), pr.end(), 0);
+	double total = std::accumulate(pr.begin(), pr.end(), 0.);
 	for (int i = 1; i < pr.size(); ++i){
 		std::string symbol = (pr[i - 1] > pr[i]) ? ">" : "=";
 		std::cout << symbol << "\t" << "pr" << std::to_string(i + 1) << "\t";
