@@ -1,6 +1,10 @@
+from random import sample
 def swap(data, i, j):
     data[i], data[j] = data[j], data[i]
-
+    try:
+        data[i].counter.being_swapped()
+    except AttributeError:
+        pass
 
 def dualPivotQuicksort(data, left, right, div):
     len = right - left
@@ -17,6 +21,8 @@ def dualPivotQuicksort(data, left, right, div):
     # "medians"
     m1 = left + third
     m2 = right - third
+    # m1, m2 = sample(range(left + 1, right - 1), 2)
+
 
     if m1 <= left:
         m1 = left + 1
@@ -39,10 +45,12 @@ def dualPivotQuicksort(data, left, right, div):
     great = right - 1
 
     # sorting
-    for k in range(less, great+1):
+    k = less
+    # for k in range(less, great+1):
+    while k <= great:
         if data[k] < pivot1:
-            less += 1
             swap(data, k, less)
+            less += 1
 
         elif data[k] > pivot2:
             while k < great and data[great] > pivot2:
@@ -54,6 +62,7 @@ def dualPivotQuicksort(data, left, right, div):
             if data[k] < pivot1:
                 swap(data, k, less)
                 less += 1
+        k += 1
 
     # swaps
     dist = great - less
@@ -69,7 +78,9 @@ def dualPivotQuicksort(data, left, right, div):
 
     # equal elements
     if (dist > (len - 13)) and (pivot1 != pivot2):
-        for k in range(less, great + 1):
+        k = less
+        # for k in range(less, great + 1):
+        while k <= great:
             if data[k] == pivot1:
                 swap(data, k, less)
                 less += 1
@@ -79,6 +90,7 @@ def dualPivotQuicksort(data, left, right, div):
                 if data[k] == pivot1:
                     swap(data, k, less)
                     less += 1
+            k += 1
     # subarray
     if pivot1 < pivot2:
         dualPivotQuicksort(data, less, great, div)
@@ -94,7 +106,7 @@ def quicksort(data):
 
 if __name__ == "__main__":
     from random import randint
-    L1 = [randint(-100, 100) for i in range(30)]
+    L1 = [randint(-10000, 10000) for i in range(10000)]
     L2 = L1.copy()
     quicksort(L1)
     L2.sort()

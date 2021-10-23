@@ -1,3 +1,11 @@
+def swap(data, i, j):
+    data[i], data[j] = data[j], data[i]
+    try:
+        data[i].counter.being_swapped()
+    except AttributeError:
+        pass
+
+
 def shell_sort(data, steps):
     last_index = len(data) - 1
     for step in steps:
@@ -5,7 +13,8 @@ def shell_sort(data, steps):
             j = i
             delta = j - step
             while delta >= 0 and data[delta] > data[j]:
-                data[delta], data[j] = data[j], data[delta]
+                # data[delta], data[j] = data[j], data[delta]
+                swap(data, delta, j)
                 j = delta
                 delta = j - step
     return data

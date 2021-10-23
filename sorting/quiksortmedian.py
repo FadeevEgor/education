@@ -1,5 +1,13 @@
 from random import sample
 
+def swap(data, i, j):
+    data[i], data[j] = data[j], data[i]
+    try:
+        data[i].counter.being_swapped()
+    except AttributeError:
+        pass
+
+
 def quickSortMedian(L, ascending = True):
     quicksorthelp(L, 0, len(L), ascending)
 
@@ -35,14 +43,17 @@ def Partition(L, low, high, ascending = True):
     # print(L)
     result = 0
     pivot, pidx = median_of_three(L, low, high)
-    L[low], L[pidx] = L[pidx], L[low]
+    # L[low], L[pidx] = L[pidx], L[low]
+    swap(L, low, pidx)
     i = low + 1
     for j in range(low+1, high, 1):
         result += 1
         if (ascending and L[j] < pivot) or (not ascending and L[j] > pivot):
-            L[i], L[j] = L[j], L[i]
+            # L[i], L[j] = L[j], L[i]
+            swap(L, i, j)
             i += 1
-    L[low], L[i-1] = L[i-1], L[low]
+    # L[low], L[i-1] = L[i-1], L[low]
+    swap(L, i-1, low)
     return i - 1, result
 
 if __name__ == "__main__":

@@ -8,8 +8,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from counter import CountableFloat, Counter
-# from quicksort2pivot import dualPivotQuickSort
-from dualpivot_stackoverflow import quicksort as dualPivotQuickSort
+from dualpivot import quicksort as dualPivotQuickSort
 from quiksortmedian import quickSortMedian
 from shellsort import knutt_shellsort, kernigan_richi_shellsort
 
@@ -42,11 +41,13 @@ methods = {
 
 args = parse_args()
 sys.setrecursionlimit(int(args.r))
-threading.stack_size(0x5000000)
+threading.stack_size(0x9999999)
 
 stand = np.load(os.path.join("./data", args.i))
+print(stand.shape)
 n, m = stand.shape
 comparisons = {method_name: np.zeros(n) for method_name in methods}
+swaps = {method_name: np.zeros(n) for method_name in methods}
 for i in tqdm(range(n)):
     for method_name, method in methods.items():
         cnt = Counter()
@@ -56,9 +57,12 @@ for i in tqdm(range(n)):
         t.start()
         t.join()
         comparisons[method_name][i] = cnt.comparisons
+        swaps[method_name][i] = cnt.swaps
         cnt.reset()
 
 
-output_filename = f"{args.o}_comparisons.csv"
-pd.DataFrame(comparisons).to_csv(os.path.join("./data", output_filename))
-print(output_filename)
+output_filename_1 = f"{args.o}_comparisons.csv"
+pd.DataFrame(comparisons).to_csv(os.path.join("./data", output_filename_1))
+output_filename_2 = f"{args.o}_swaps.csv"
+pd.DataFrame(swaps).to_csv(os.path.join("./data", output_filename_2))
+print(output_filename_1, output_filename_2)
