@@ -8,7 +8,8 @@ import pandas as pd
 from tqdm import tqdm
 
 from counter import CountableFloat, Counter
-from quicksort2pivot import dualPivotQuickSort
+# from quicksort2pivot import dualPivotQuickSort
+from dualpivot_stackoverflow import quicksort as dualPivotQuickSort
 from quiksortmedian import quickSortMedian
 from shellsort import knutt_shellsort, kernigan_richi_shellsort
 
@@ -32,7 +33,7 @@ def parse_args():
 
 methods = {
     "Median of three Quick Sort": quickSortMedian,
-    # "Dual Pivot QuickSort": dualPivotQuickSort,
+    "Dual Pivot QuickSort": dualPivotQuickSort,
     "Kernigan Richi shellsort": kernigan_richi_shellsort,
     "Knutt shellsort": knutt_shellsort,
     "Tim sort": sorted,

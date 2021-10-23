@@ -3,7 +3,6 @@
 # https://www.geeksforgeeks.org/dual-pivot-quicksort/
 # This code is contributed by Gourish Sadhu
 
-
 def _dualPivotQuickSort(arr, low, high):
     if low < high:
         # lp means left pivot and rp
@@ -18,18 +17,22 @@ def _dualPivotQuickSort(arr, low, high):
             (high - rp - 1, rp + 1, high),
                  ]
 
-        for size in sorted(sizes, key=lambda x: x[0], reverse=True):
+        for size in sorted(sizes, key=lambda x: x[0]):
             _, low, high = size
             _dualPivotQuickSort(arr, low, high)
 
 
 def partition(arr, low, high):
+
     if arr[low] > arr[high]:
         arr[low], arr[high] = arr[high], arr[low]
 
     # p is the left pivot, and q is the right pivot.
-    j = k = low + 1
-    g, p, q = high - 1, arr[low], arr[high]
+    j = low + 1
+    k = low + 1
+    g = high - 1
+    p = arr[low]
+    q = arr[high]
 
     while k <= g:
 
