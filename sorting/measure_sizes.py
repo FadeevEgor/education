@@ -29,7 +29,7 @@ methods = {
 sys.setrecursionlimit(5000)
 threading.stack_size(0x9999999)
 
-N = 11
+N = 12
 sizes = [100 * 2 ** i for i in range(N)]
 
 comparisons = {method_name: np.zeros(N) for method_name in methods}

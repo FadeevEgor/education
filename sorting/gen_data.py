@@ -6,7 +6,7 @@ import os
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Generate matrix to sort')
-    parser.add_argument('-N', help='Number of strings',  default=10000)
+    parser.add_argument('-N', help='Size of array to sort',  default=10000)
     parser.add_argument('-M', help='Number of steps in each direction', default=100)
     parser.add_argument('-o', help="output filename", default="stand")
     return parser.parse_args()
