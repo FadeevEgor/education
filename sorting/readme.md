@@ -17,3 +17,5 @@
 [measure_sizes.py](./measure_sizes.py) измеряет время сортировки случайнозаполненного массива в зависимости от размера этого массива.
 
 
+![image](./data/image.png)
+![image](./data/10000_image.png)
