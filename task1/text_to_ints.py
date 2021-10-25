@@ -7,7 +7,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='translate text into int32 array of unicode points')
     parser.add_argument('-l', help='language',  required=True)
     parser.add_argument('-N', help='text length', default=10 ** 8)
-    parser.add_argument('-M', help='maximum pattern length', default=10 ** 7)
+    parser.add_argument('-M', help='maximum pattern length', default=10 ** 6)
     return parser.parse_args()
      
 
@@ -46,7 +46,7 @@ symbols = sorted(list(set(unicode_codes)))
 symbols = list(set(unicode_codes))
 pattern_length = 10
 while pattern_length <= int(args.M):
-    with open(os.path.join(directory, f"patterns_{pattern_length}.txt"), "w") as f:
+    with open(os.path.join(directory, f"substr_patterns_{pattern_length}.txt"), "w") as f:
         for i in range(50):
             pattern = random_substring(unicode_codes, pattern_length)
             f.write(" ".join([str(code) for code in pattern]) + "\n")

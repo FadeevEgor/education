@@ -9,19 +9,19 @@
 
 #define one_sec 1000
 
-const std::string textfilename = "data/ru/text.csv";
+const std::string textfilename = "data/zh/text.csv";
 //const std::string text = "data/ch.csv"
-const std::string patternsfilenameprefix = "data/ru/patterns_";
+const std::string patternsfilenameprefix = "data/zh/random_patterns_";
 
 
 // d is the number of characters in the input alphabet
 const int d = 256;
 // N is the text length
-const int N = 100000000;
+const int N = 1000;
 // N is the text length
 const int M_max = 10000000;
 //A prime number
-const int q = 4294967295;
+const int q = 151;
 
 int counter = 0;
 
@@ -184,7 +184,7 @@ int main()
 	// for each pattern make search
 	std::string str;
 	
-	std::vector<int> pattern_lengths = {10, 100, 1000, 10000, 100000, 10000000};
+	std::vector<int> pattern_lengths = {10, 100, 1000, 10000, 100000, 1000000};
 	std::cout << "M,NaiveSearch_time,RabinKarpSearch_time" << std::endl;
 	std::vector<int> NaiveSearch_time;
 	std::vector<int> RabinKarp_time;
