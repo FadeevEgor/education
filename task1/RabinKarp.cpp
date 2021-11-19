@@ -9,15 +9,15 @@
 
 #define one_sec 1000
 
-const std::string textfilename = "data/zh/text.csv";
+const std::string textfilename = "data/ru/text.csv";
 //const std::string text = "data/ch.csv"
-const std::string patternsfilenameprefix = "data/zh/random_patterns_";
+const std::string patternsfilenameprefix = "data/ru/sub_string_patterns_";
 
 
 // d is the number of characters in the input alphabet
 const int d = 256;
 // N is the text length
-const int N = 1000;
+const int N = 10000;
 // N is the text length
 const int M_max = 10000000;
 //A prime number
@@ -30,7 +30,8 @@ bool compare_by_symbols(const std::vector<int> &text, const std::vector<int> &pa
 		if (text[index + j] != pattern[j])
 			return false;
 	}
-	return true;
+	// return true;
+	return false;
 }
 
 
@@ -66,7 +67,7 @@ int RabinKarpSearch( const std::vector<int> &text, const std::vector<int> &patte
 			counter++;
 			if (compare_by_symbols(text, pattern, i))
 				return i;
-				
+				// continue;
 		}
 
 		// Calculate hash value for next window of text: Remove
@@ -112,6 +113,7 @@ int RabinKarpSearch_sum( const std::vector<int> &text, const std::vector<int> &p
 			counter++;
 			if (compare_by_symbols(text, pattern, i))
 				return i;
+				// continue;
 				
 		}
 
@@ -137,6 +139,7 @@ int NaiveSearch(const std::vector<int> &text, const std::vector<int> &pattern){
 	for(int i=0; i < N - M; ++i){
 		if (compare_by_symbols(text, pattern, i))
 			return i;
+			// continue;
 	}
 	return -1;
 }
