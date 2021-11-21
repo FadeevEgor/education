@@ -1,12 +1,14 @@
 from itertools import combinations
 from random import shuffle
+import os
 
 import networkx as nx
 from matplotlib import pyplot as plt
 import pandas as pd
+from matplotlib import cm
 
-from pathfinder import PathFinder as PF
-
+from routefinder import RouteFinder as RF
+from tqdm import tqdm
 
 def get_setup(size):
     nodes = range(size)
@@ -22,46 +24,92 @@ def get_setup(size):
 
 def calls_vs_connectivity(graph, possible_edges):
     nodes = graph.number_of_nodes()
-    edges, calls, success = [], [], []
+    edges, calls, routes, calls_total = [], [], [], []
 
-
+    bar = tqdm(total=len(possible_edges))
     while True:
-        pf = PF(graph)
-        path = pf.find_path()
-        succ = (path is not None)
-        calls.append(pf.calls)
+        rf = RF(graph)
+        rf.find_route()
+        calls.append(rf.calls)
         edges.append(graph.number_of_edges())
-        success.append(succ)
+        rf.find_all_routes()
+        routes.append(len(rf.routes))
+        calls_total.append(rf.calls)
         if not possible_edges:
             break
         graph.add_edge(*possible_edges.pop())
+        bar.update()
 
     df = pd.DataFrame(
         data={
             "edges": edges,
             "calls": calls,
-            "success": success
+            "routes": routes,
+            "calls_total": calls
         }
     )
     df["nodes"] = nodes
+    bar.close()
     return df
 
 
-def plot_path(path, save_to=None):
-    path_edges = [(path[i], path[i + 1], i/len(path)) for i in range(len(path) - 1)]
-    path_graph = nx.DiGraph()
-    path_graph.add_weighted_edges_from(path_edges)
-    fig, ax = plt.subplots()
+def plot_all_routes(graph, possible_edges, folder="./pictures/"):
+    plt.rc('text', usetex=True)
+    plt.rc('font', size=24)
+    plt.rcParams['text.latex.preamble'] = r"""
+    \usepackage[utf8]{inputenc}
+    \usepackage[english,russian]{babel}
+    \usepackage{amsmath}
+    """
+    nodes = graph.number_of_nodes()
+    folder_to_save = os.path.join(folder, f"{nodes}_nodes")
+    os.makedirs(folder_to_save, exist_ok=True)
+    bar = tqdm(total=len(possible_edges))
+    while True:
+        pf = RF(graph)
+        routes = pf.find_all_routes()
+        for i, route in enumerate(routes):
+            filename = f"{graph.number_of_edges()}_edges_{i:04}.png"
+            path_to_save = os.path.join(folder_to_save, filename)
+            plot_route(graph, route, path_to_save)
+        if not possible_edges:
+            break
+        bar.update()
+        graph.add_edge(*possible_edges.pop())
 
-    pos = nx.shell_layout(path_graph)
-    starting_node = path[0]
-    x, y = pos[starting_node]
-    ax.scatter([x], [y], color="r", s=1000)
-    nx.draw(path_graph, pos=pos, with_labels=True, font_weight='bold', ax=ax)
-    ax.set_title(" -> ".join([str(p) for p in path]))
+
+def plot_route(graph, route, save_to=None):
+    route_edges = [(route[i], route[i + 1]) for i in range(len(route) - 1)]
+    str_route = r"\to".join([str(r) for r in route])
+    route_graph = nx.DiGraph()
+    route_graph.add_edges_from(route_edges)
+    edge_color = [i for i, _ in enumerate(route_edges)]
+    pos = nx.layout.shell_layout(graph)
+    kwargs = {
+        "with_labels": True,
+        "node_size": 700,
+        "node_color": "lightskyblue",
+        "font_size": 24,
+        "font_weight": 'bold',
+        "pos": pos
+    }
+
+    fig, axs = plt.subplots(ncols=2, figsize=(10, 5))
+    fig.suptitle(f"${str_route}$", fontsize=24)
+    nx.draw(graph, ax=axs[0], **kwargs)
+    kwargs.update(edge_cmap=cm.get_cmap("jet"), edge_color=edge_color)
+    nx.draw(route_graph, ax=axs[1], **kwargs)
+
     if save_to is None:
         plt.show()
     else:
         plt.savefig(save_to)
+    plt.close(fig)
+    fig.clear()
+    for ax in axs:
+        ax.clear()
+
+
+
 
 
