@@ -1,6 +1,7 @@
 import numpy as np
 import networkx as nx
 
+
 class RouteFinder:
     def __init__(self, graph):
         self.graph = graph
@@ -17,8 +18,8 @@ class RouteFinder:
         self.success = False
         for i in range(self.n_nodes):
             self.route = [i]
-            succ, route = self.__find_route_rec(i)
-            if succ:
+            success, route = self.__find_route_rec(i)
+            if success:
                 return route
         return None
 
@@ -51,8 +52,8 @@ class RouteFinder:
         for j in self.graph.neighbors(i):
             if not self.edges_visited[i, j]:
                 self.__mark_visited(i, j)
-                succ, route = self.__find_route_rec(j)
-                if succ:
+                success, route = self.__find_route_rec(j)
+                if success:
                     return True, route
                 self.__unmark_visited(i, j)
 
@@ -71,5 +72,3 @@ class RouteFinder:
                 self.__mark_visited(i, j)
                 self.__find_all_routes_rec(j)
                 self.__unmark_visited(i, j)
-
-        return False, None
